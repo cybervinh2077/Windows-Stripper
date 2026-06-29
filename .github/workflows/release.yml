@@ -1,0 +1,47 @@
+name: Build and Release
+
+# Chạy khi push tag dạng v* (vd: v1.0.1)
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write   # cần quyền ghi để tạo release
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Đặt AppVersion trong mã nguồn = tag (bỏ chữ "v") để luôn khớp release
+      - name: Đồng bộ AppVersion theo tag
+        shell: pwsh
+        run: |
+          $v = "${{ github.ref_name }}".TrimStart('v')
+          Write-Host "AppVersion -> $v"
+          (Get-Content Program.cs) `
+            -replace 'AppVersion\s*=\s*"[^"]*"', "AppVersion  = `"$v`"" |
+            Set-Content Program.cs -Encoding UTF8
+
+      # Tạo lại icon từ fpt.png
+      - name: Tạo icon
+        shell: pwsh
+        run: ./make-icon.ps1
+
+      # Biên dịch cả 2 bản (thật + TEST) bằng csc.exe có sẵn trên runner
+      - name: Build
+        shell: pwsh
+        run: ./build.ps1
+
+      # Tạo release cho tag vừa push và đính kèm 2 file exe
+      - name: Tạo Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ github.ref_name }}
+          generate_release_notes: true
+          files: |
+            WindowsStriper.exe
+            WindowsStriper-TEST.exe
