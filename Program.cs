@@ -32,7 +32,7 @@ namespace WindowsStriper
         private const string WindowsAppId = "55c92734-d682-4d71-983e-d6ec3f16059f";
 
         // ===== Cấu hình cập nhật OTA (đổi sang GitHub của bạn) =====
-        private const string AppVersion  = "1.0.0";
+        private const string AppVersion  = "1.0.1";
         private const string UpdateOwner = "cybervinh2077";    // <-- GitHub username
         private const string UpdateRepo  = "Windows-Stripper"; // <-- tên repo
         // Tool sẽ đọc release mới nhất tại:
