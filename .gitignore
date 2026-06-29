@@ -1,0 +1,8 @@
+# File build (phân phối qua GitHub Releases, không commit vào repo)
+*.exe
+*.exe.new
+ws_update.bat
+
+# Tạm
+*.tmp
+*.log
